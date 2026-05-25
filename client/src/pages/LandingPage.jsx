@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { Search, SlidersHorizontal, Check, RefreshCw, ShoppingCart, User, QrCode, ShieldCheck, ArrowRight, Star } from 'lucide-react';
+import { Search, SlidersHorizontal, Check, RefreshCw, ShoppingCart, User, QrCode, ShieldCheck, ArrowRight, Star, Sprout } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const API_URL = 'http://localhost:5000/api/v1';
