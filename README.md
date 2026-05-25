@@ -10,36 +10,7 @@ Designed to showcase clean database modeling, well-structured Express API routin
 
 Here is the architectural design showing the integration of the React frontend, modular Express REST API, MongoDB storage, and Cloudinary media pipeline:
 
-```mermaid
-flowchart TD
-    %% Clients
-    subgraph ClientLayer ["Client (React SPA)"]
-        A["React App (Vite, React Router, TailwindCSS)"]
-    end
-
-    %% Web Server / Routing
-    subgraph ServerLayer ["Server (Express REST API)"]
-        B["Express.js App (Port 5000)"]
-        C["JWT Auth Middleware"]
-        D["Role Middleware (RBAC)"]
-        E["Multer Upload Handler"]
-        
-        B --> C
-        B --> D
-        B --> E
-    end
-
-    %% Database & Cloud Storage
-    subgraph StorageLayer ["Data & Cloud Storage"]
-        F[("MongoDB Database (Port 27017)")]
-        G["Cloudinary (Media & PDFs)"]
-    end
-
-    %% Flow
-    A -- HTTPS Requests / JWT Token --> B
-    C -- Queries / Transactions --> F
-    E -- Upload Media Files --> G
-```
+![Veritas System Architecture](./docs/system_architecture.png)
 
 ---
 
