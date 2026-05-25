@@ -149,21 +149,21 @@ export const Traceability = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Verification Stamp Banner */}
-      <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm text-white">
         <div className="flex items-start gap-3">
           <div className="bg-emerald-500 text-white rounded-full p-2.5 mt-0.5 shadow-sm">
             <ShieldCheck className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-emerald-950">Crop Authenticity Verified</h2>
-            <p className="text-xs text-emerald-700 leading-relaxed max-w-xl">
+            <h2 className="text-lg font-bold text-slate-100">Verified Crop Traceability Log</h2>
+            <p className="text-xs text-slate-400 leading-relaxed max-w-xl">
               This agricultural product is registered in the Veritas verification database. 
               Its origin details, farming parameters, and approved credentials have been authenticated.
             </p>
           </div>
         </div>
-        <div className="text-xs text-emerald-800 bg-emerald-100/80 px-3.5 py-2 rounded-xl font-mono text-center md:text-right border border-emerald-200">
-          <span className="font-bold block uppercase tracking-wider text-[9px] text-emerald-900 mb-0.5">Audit Event Logged</span>
+        <div className="text-xs text-slate-450 bg-slate-800/80 px-3.5 py-2 rounded-xl font-mono text-center md:text-right border border-slate-700">
+          <span className="font-bold block uppercase tracking-wider text-[9px] text-emerald-400 mb-0.5">Audit Event Logged</span>
           {new Date().toLocaleTimeString()} &bull; {locationLogMsg.includes('credentials omitted') ? 'IP Encoded' : 'Coords Registered'}
         </div>
       </div>
@@ -173,7 +173,7 @@ export const Traceability = () => {
         <div className="space-y-6">
           {/* Crop Profile card */}
           <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-            {product.images && product.images.length > 0 && (
+            {product.images && product.images.length > 0 ? (
               <div className="h-44 bg-slate-100 rounded-lg overflow-hidden mb-4">
                 <img 
                   src={product.images[0].startsWith('http') ? product.images[0] : `http://localhost:5000${product.images[0]}`}
@@ -181,28 +181,52 @@ export const Traceability = () => {
                   className="w-full h-full object-cover"
                 />
               </div>
+            ) : (
+              <div className="h-44 bg-slate-100 rounded-lg overflow-hidden mb-4 flex flex-col items-center justify-center text-slate-450 relative">
+                <div className="absolute inset-0 opacity-5 bg-[radial-gradient(#2f622b_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                <Sprout className="w-10 h-10 text-primary-600/30 mb-1 relative z-10" />
+                <span className="text-[10px] font-bold tracking-wider uppercase text-slate-400/80 relative z-10">Crop Listing</span>
+              </div>
             )}
             
-            <span className="bg-slate-100 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded border border-slate-200 uppercase tracking-wider">
-              {product.category}
-            </span>
-            <h1 className="text-2xl font-black text-slate-900 mt-2 mb-1">{product.name}</h1>
+            <div className="flex items-center justify-between gap-2">
+              <span className="bg-slate-100 text-slate-750 text-[10px] font-bold px-2.5 py-0.5 rounded border border-slate-200 uppercase tracking-wider">
+                {product.category}
+              </span>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                product.stockQuantity > 0 
+                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-150' 
+                  : 'bg-slate-100 text-slate-500 border border-slate-200'
+              }`}>
+                {product.stockQuantity > 0 ? `In Stock (${product.stockQuantity} ${product.unitOfMeasure})` : 'Sold Out'}
+              </span>
+            </div>
+
+            <h1 className="text-2xl font-black text-slate-900 mt-3 mb-1">{product.name}</h1>
             <p className="text-xs text-slate-400 font-mono">SKU: {product.sku}</p>
 
             <div className="border-t border-slate-100 my-4 pt-4 space-y-2 text-xs">
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center">
                 <span className="text-slate-400">Quality Grade</span>
-                <span className="font-bold text-slate-900">Grade {product.qualityGrade}</span>
+                <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold border ${
+                  product.qualityGrade === 'A'
+                    ? 'bg-emerald-600 text-white border-emerald-500'
+                    : product.qualityGrade === 'B'
+                    ? 'bg-blue-600 text-white border-blue-500'
+                    : 'bg-amber-600 text-white border-amber-500'
+                }`}>
+                  Grade {product.qualityGrade}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400">Harvest Date</span>
-                <span className="font-bold text-slate-900">
+                <span className="font-bold text-slate-800">
                   {product.harvestDate ? new Date(product.harvestDate).toLocaleDateString() : 'N/A'}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400">Yield Price</span>
-                <span className="font-bold text-slate-900">${product.price.toFixed(2)} / {product.unitOfMeasure}</span>
+                <span className="font-bold text-slate-800">${product.price.toFixed(2)} / {product.unitOfMeasure}</span>
               </div>
             </div>
 
@@ -214,18 +238,18 @@ export const Traceability = () => {
           {/* Source Farmer Card */}
           <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
             <h3 className="font-bold text-slate-900 text-sm mb-3 flex items-center gap-1.5">
-              <User className="w-4 h-4 text-slate-500" />
+              <User className="w-4 h-4 text-slate-550" />
               <span>Origin Farmer</span>
             </h3>
             
-            <p className="font-bold text-slate-800 text-xs">{farmerName}</p>
+            <p className="font-bold text-slate-850 text-xs">{farmerName}</p>
             <p className="text-slate-500 text-[11px] mt-0.5">{product.farmer?.email}</p>
 
             {product.farmer?.profile?.address && (
               <div className="mt-3 pt-3 border-t border-slate-100 text-[11px] text-slate-400 flex items-start gap-1">
-                <MapPin className="w-3.5 h-3.5 text-slate-400 flex-shrink-0 mt-0.5" />
+                <MapPin className="w-3.5 h-3.5 text-slate-450 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-slate-600">{product.farmer.profile.address.street}</p>
+                  <p className="text-slate-650 font-medium">{product.farmer.profile.address.street}</p>
                   <p>{product.farmer.profile.address.city}, {product.farmer.profile.address.state} {product.farmer.profile.address.postalCode}</p>
                   <p>{product.farmer.profile.address.country}</p>
                 </div>
@@ -245,11 +269,11 @@ export const Traceability = () => {
             ) : (
               <div className="space-y-4">
                 {certifications.map((cert) => (
-                  <div key={cert._id} className="bg-slate-50 border border-slate-150 rounded-lg p-3 text-xs">
+                  <div key={cert._id} className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs">
                     <div className="flex items-center justify-between mb-1.5">
-                      <span className="font-bold text-primary-700">{cert.certificationType}</span>
-                      <span className="bg-green-100 text-green-800 text-[9px] font-extrabold px-1.5 py-0.5 rounded">
-                        Active
+                      <span className="font-bold text-primary-750">{cert.certificationType}</span>
+                      <span className="bg-emerald-50 text-emerald-800 text-[9px] font-extrabold px-1.5 py-0.5 rounded border border-emerald-200 uppercase">
+                        Verified
                       </span>
                     </div>
                     <p className="text-slate-600 text-[10px] font-mono">No: {cert.certificateNumber}</p>
@@ -261,10 +285,10 @@ export const Traceability = () => {
                         href={cert.certificateUrl.startsWith('http') ? cert.certificateUrl : `http://localhost:5000${cert.certificateUrl}`}
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="text-primary-600 hover:underline font-semibold mt-2 block flex items-center gap-0.5 text-[10px]"
+                        className="text-primary-600 hover:underline font-bold mt-2.5 block flex items-center gap-1 text-[10px]"
                       >
                         <FileText className="w-3.5 h-3.5" />
-                        <span>View Verified Document</span>
+                        <span>View Verification File</span>
                       </a>
                     )}
                   </div>
@@ -281,7 +305,7 @@ export const Traceability = () => {
             <span>Product Lifecycle Timeline</span>
           </h3>
           <p className="text-xs text-slate-500 mb-8">
-            Veritas verified timeline of production events, registered directly by the primary farmer.
+            Chronological log of cultivation, harvesting, and packaging stages logged directly by the farmer.
           </p>
 
           {history.length === 0 ? (
@@ -299,6 +323,8 @@ export const Traceability = () => {
                   bgColor: 'bg-slate-50',
                   textColor: 'text-slate-800'
                 };
+                
+                const isLatest = index === history.length - 1;
 
                 return (
                   <div key={record._id} className="relative group">
@@ -308,13 +334,24 @@ export const Traceability = () => {
                     </div>
 
                     {/* Timeline card */}
-                    <div className="bg-slate-50 border border-slate-150 rounded-xl p-5 hover:border-slate-300 transition-colors">
+                    <div className={`border rounded-xl p-5 hover:border-slate-350 transition-colors shadow-xs ${
+                      isLatest 
+                        ? 'bg-slate-50/50 border-emerald-450 ring-1 ring-emerald-500/10' 
+                        : 'bg-slate-50/20 border-slate-150'
+                    }`}>
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2">
-                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${stageDetails.bgColor} ${stageDetails.textColor}`}>
-                          {stageDetails.label}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${stageDetails.bgColor} ${stageDetails.textColor} border border-current/10`}>
+                            {stageDetails.label}
+                          </span>
+                          {isLatest && (
+                            <span className="bg-emerald-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider animate-pulse">
+                              Current Stage
+                            </span>
+                          )}
+                        </div>
                         
-                        <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                        <span className="text-[10px] text-slate-400 flex items-center gap-1 font-medium">
                           <Calendar className="w-3.5 h-3.5" />
                           {new Date(record.timestamp).toLocaleDateString()} &bull; {new Date(record.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
@@ -328,7 +365,7 @@ export const Traceability = () => {
 
                       {/* Temperature & Humidity */}
                       {(record.temperature !== undefined || record.humidity !== undefined) && (
-                        <div className="flex flex-wrap gap-4 text-slate-600 text-xs mb-3 bg-white px-3 py-1.5 rounded-lg border border-slate-100 w-fit">
+                        <div className="flex flex-wrap gap-4 text-slate-600 text-xs mb-3 bg-white px-3 py-1.5 rounded-lg border border-slate-150 w-fit shadow-2xs">
                           {record.temperature !== undefined && (
                             <span className="flex items-center gap-1">
                               <Thermometer className="w-3.5 h-3.5 text-orange-400" />
@@ -346,13 +383,13 @@ export const Traceability = () => {
 
                       {/* Notes logs */}
                       {record.notes && (
-                        <p className="text-xs text-slate-600 leading-relaxed bg-white border border-slate-100 p-3 rounded-lg">
+                        <p className="text-xs text-slate-650 leading-relaxed bg-white border border-slate-150 p-3 rounded-lg shadow-2xs">
                           {record.notes}
                         </p>
                       )}
 
                       {/* Logger details */}
-                      <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+                      <div className="mt-4 pt-3 border-t border-slate-150 flex items-center justify-between text-[10px] text-slate-400">
                         <span className="flex items-center gap-1">
                           <User className="w-3 h-3" />
                           <span>Logged by: {record.recordedBy?.profile?.firstName} {record.recordedBy?.profile?.lastName}</span>

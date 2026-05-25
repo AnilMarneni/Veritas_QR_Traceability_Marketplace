@@ -316,33 +316,84 @@ export const FarmerDashboard = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-200 pb-5 mb-8">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900">Farmer Dashboard</h1>
-          <p className="text-sm text-slate-500 mt-1">Manage listings, certs, log timelines, and track received orders.</p>
+          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Farmer Dashboard</h1>
+          <p className="text-sm text-slate-555 mt-1">Manage crop listings, certificates, log timelines, and track buyer orders.</p>
         </div>
         <div className="mt-4 md:mt-0 flex items-center gap-2">
           {user.farmerVerificationStatus === 'verified' ? (
-            <span className="bg-green-50 text-green-700 text-xs font-bold px-3 py-1.5 rounded-full border border-green-200 flex items-center gap-1">
-              <CheckCircle2 className="w-4 h-4" /> Verified Farmer
+            <span className="bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1.5 rounded-full border border-emerald-200 flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Verified Farmer
             </span>
           ) : (
             <span className="bg-amber-50 text-amber-700 text-xs font-bold px-3 py-1.5 rounded-full border border-amber-200 capitalize">
-              Verification Status: {user.farmerVerificationStatus || 'none'}
+              Verification: {user.farmerVerificationStatus || 'none'}
             </span>
           )}
         </div>
       </div>
 
+      {/* Stats Cards Section */}
+      {user.farmerVerificationStatus === 'verified' && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex items-center justify-between">
+            <div>
+              <p className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Total Crops</p>
+              <p className="text-2xl font-black text-slate-900 mt-1">{myProducts.length}</p>
+            </div>
+            <div className="bg-emerald-50 text-emerald-600 rounded-xl p-2.5">
+              <Sprout className="w-5 h-5" />
+            </div>
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex items-center justify-between">
+            <div>
+              <p className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Active Listings</p>
+              <p className="text-2xl font-black text-slate-900 mt-1">
+                {myProducts.filter(p => p.status === 'active').length}
+              </p>
+            </div>
+            <div className="bg-blue-50 text-blue-600 rounded-xl p-2.5">
+              <Shield className="w-5 h-5" />
+            </div>
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex items-center justify-between">
+            <div>
+              <p className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Received Orders</p>
+              <p className="text-2xl font-black text-slate-900 mt-1">{orders.length}</p>
+            </div>
+            <div className="bg-purple-50 text-purple-600 rounded-xl p-2.5">
+              <Clipboard className="w-5 h-5" />
+            </div>
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex items-center justify-between">
+            <div>
+              <p className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Farm Revenue</p>
+              <p className="text-2xl font-black text-slate-900 mt-1">
+                ${orders.filter(o => o.status !== 'cancelled').reduce((sum, o) => sum + o.totalAmount, 0).toFixed(2)}
+              </p>
+            </div>
+            <div className="bg-amber-50 text-amber-600 rounded-xl p-2.5">
+              <BarChart2 className="w-5 h-5" />
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Navigation Tabs */}
         <div className="lg:w-64 flex-shrink-0">
-          <div className="bg-white border border-slate-200 rounded-xl p-3 space-y-1 shadow-sm">
+          <div className="bg-white border border-slate-200 rounded-xl p-3 space-y-1 shadow-sm lg:sticky lg:top-20">
             <button
               onClick={() => setActiveTab('verification')}
-              className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-semibold flex items-center space-x-2 ${
-                activeTab === 'verification' ? 'bg-primary-500 text-white' : 'text-slate-700 hover:bg-slate-50'
+              className={`w-full text-left px-4 py-2.5 rounded-lg text-xs font-bold flex items-center space-x-2 transition-all ${
+                activeTab === 'verification'
+                  ? 'bg-primary-600 text-white shadow-xs'
+                  : 'text-slate-700 hover:bg-slate-50'
               }`}
             >
-              <Shield className="w-4.5 h-4.5" />
+              <Shield className="w-4 h-4" />
               <span>Farmer Verification</span>
             </button>
             
@@ -350,38 +401,46 @@ export const FarmerDashboard = () => {
               <>
                 <button
                   onClick={() => setActiveTab('products')}
-                  className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-semibold flex items-center space-x-2 ${
-                    activeTab === 'products' ? 'bg-primary-500 text-white' : 'text-slate-700 hover:bg-slate-50'
+                  className={`w-full text-left px-4 py-2.5 rounded-lg text-xs font-bold flex items-center space-x-2 transition-all ${
+                    activeTab === 'products'
+                      ? 'bg-primary-600 text-white shadow-xs'
+                      : 'text-slate-700 hover:bg-slate-50'
                   }`}
                 >
-                  <Sprout className="w-4.5 h-4.5" />
+                  <Sprout className="w-4 h-4" />
                   <span>My Crops</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('traceability')}
-                  className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-semibold flex items-center space-x-2 ${
-                    activeTab === 'traceability' ? 'bg-primary-500 text-white' : 'text-slate-700 hover:bg-slate-50'
+                  className={`w-full text-left px-4 py-2.5 rounded-lg text-xs font-bold flex items-center space-x-2 transition-all ${
+                    activeTab === 'traceability'
+                      ? 'bg-primary-600 text-white shadow-xs'
+                      : 'text-slate-700 hover:bg-slate-50'
                   }`}
                 >
-                  <Clipboard className="w-4.5 h-4.5" />
+                  <Clipboard className="w-4 h-4" />
                   <span>Traceability Stages</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('certifications')}
-                  className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-semibold flex items-center space-x-2 ${
-                    activeTab === 'certifications' ? 'bg-primary-500 text-white' : 'text-slate-700 hover:bg-slate-50'
+                  className={`w-full text-left px-4 py-2.5 rounded-lg text-xs font-bold flex items-center space-x-2 transition-all ${
+                    activeTab === 'certifications'
+                      ? 'bg-primary-600 text-white shadow-xs'
+                      : 'text-slate-700 hover:bg-slate-50'
                   }`}
                 >
-                  <FileCheck className="w-4.5 h-4.5" />
+                  <FileCheck className="w-4 h-4" />
                   <span>Certifications</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('orders')}
-                  className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-semibold flex items-center space-x-2 ${
-                    activeTab === 'orders' ? 'bg-primary-500 text-white' : 'text-slate-700 hover:bg-slate-50'
+                  className={`w-full text-left px-4 py-2.5 rounded-lg text-xs font-bold flex items-center space-x-2 transition-all ${
+                    activeTab === 'orders'
+                      ? 'bg-primary-600 text-white shadow-xs'
+                      : 'text-slate-700 hover:bg-slate-50'
                   }`}
                 >
-                  <Plus className="w-4.5 h-4.5" />
+                  <Plus className="w-4 h-4" />
                   <span>Received Orders</span>
                 </button>
               </>
@@ -599,7 +658,7 @@ export const FarmerDashboard = () => {
                 <h2 className="text-xl font-bold text-slate-900 mb-4">My Crop Listings</h2>
                 {productsLoading ? (
                   <div className="text-center py-6 text-slate-500 flex items-center justify-center gap-2">
-                    <RefreshCw className="w-5 h-5 animate-spin" />
+                    <RefreshCw className="w-5 h-5 animate-spin text-primary-500" />
                     <span>Loading products...</span>
                   </div>
                 ) : myProducts.length === 0 ? (
@@ -607,46 +666,64 @@ export const FarmerDashboard = () => {
                 ) : (
                   <table className="w-full text-sm text-left border-collapse">
                     <thead>
-                      <tr className="border-b border-slate-200 text-xs font-semibold uppercase text-slate-400">
-                        <th className="py-3 px-2">Crop Name</th>
-                        <th className="py-3 px-2">Price</th>
-                        <th className="py-3 px-2">Stock</th>
-                        <th className="py-3 px-2">Grade</th>
-                        <th className="py-3 px-2">Status</th>
-                        <th className="py-3 px-2 text-right">Actions</th>
+                      <tr className="bg-slate-50 text-xs font-bold uppercase text-slate-550 border-b border-slate-200">
+                        <th className="py-3 px-4 rounded-l-lg">Crop Name</th>
+                        <th className="py-3 px-3">Price</th>
+                        <th className="py-3 px-3">Stock</th>
+                        <th className="py-3 px-3">Quality Grade</th>
+                        <th className="py-3 px-3">Visibility</th>
+                        <th className="py-3 px-4 text-right rounded-r-lg">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {myProducts.map(p => (
-                        <tr key={p._id} className="border-b border-slate-100 hover:bg-slate-50/50">
-                          <td className="py-4 px-2 font-bold text-slate-900">{p.name}</td>
-                          <td className="py-4 px-2">${p.price}/{p.unitOfMeasure}</td>
-                          <td className="py-4 px-2">{p.stockQuantity} {p.unitOfMeasure}</td>
-                          <td className="py-4 px-2">Grade {p.qualityGrade}</td>
-                          <td className="py-4 px-2">
-                            <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${
-                              p.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-600'
+                        <tr key={p._id} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                          <td className="py-4 px-4 font-bold text-slate-900">{p.name}</td>
+                          <td className="py-4 px-3 text-slate-700 font-medium">${p.price.toFixed(2)} / {p.unitOfMeasure}</td>
+                          <td className="py-4 px-3 text-slate-600">{p.stockQuantity} {p.unitOfMeasure}</td>
+                          <td className="py-4 px-3">
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold border ${
+                              p.qualityGrade === 'A'
+                                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                                : p.qualityGrade === 'B'
+                                ? 'bg-blue-50 text-blue-800 border-blue-200'
+                                : 'bg-amber-50 text-amber-800 border-amber-200'
+                            }`}>
+                              Grade {p.qualityGrade}
+                            </span>
+                          </td>
+                          <td className="py-4 px-3">
+                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase border ${
+                              p.status === 'active' 
+                                ? 'bg-emerald-50 text-emerald-705 border-emerald-250' 
+                                : 'bg-slate-105 text-slate-600 border-slate-200'
                             }`}>
                               {p.status}
                             </span>
                           </td>
-                          <td className="py-4 px-2 text-right flex justify-end gap-2">
-                            <button
-                              onClick={() => handleToggleStatus(p._id, p.status)}
-                              className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-2.5 py-1.5 rounded"
-                            >
-                              {p.status === 'active' ? 'Deactivate' : 'Publish'}
-                            </button>
-                            <button
-                              onClick={() => {
-                                setSelectedProduct(p);
-                                handleFetchQR(p._id);
-                                handleFetchScanStats(p._id);
-                              }}
-                              className="text-xs bg-primary-50 hover:bg-primary-100 text-primary-700 font-semibold px-2.5 py-1.5 rounded"
-                            >
-                              QR Verify
-                            </button>
+                          <td className="py-4 px-4 text-right">
+                            <div className="flex justify-end gap-2">
+                              <button
+                                onClick={() => handleToggleStatus(p._id, p.status)}
+                                className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition-colors ${
+                                  p.status === 'active' 
+                                    ? 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200' 
+                                    : 'bg-primary-500 hover:bg-primary-600 text-white border-transparent'
+                                }`}
+                              >
+                                {p.status === 'active' ? 'Deactivate' : 'Publish'}
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setSelectedProduct(p);
+                                  handleFetchQR(p._id);
+                                  handleFetchScanStats(p._id);
+                                }}
+                                className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-750 font-bold px-3 py-1.5 rounded-lg border border-slate-200 transition-colors"
+                              >
+                                QR Verify
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -869,8 +946,8 @@ export const FarmerDashboard = () => {
             <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm overflow-x-auto">
               <h2 className="text-xl font-bold text-slate-900 mb-4">Received Marketplace Orders</h2>
               {ordersLoading ? (
-                <div className="text-center py-6 text-slate-500 flex items-center justify-center gap-2">
-                  <RefreshCw className="w-5 h-5 animate-spin" />
+                <div className="text-center py-6 text-slate-505 flex items-center justify-center gap-2">
+                  <RefreshCw className="w-5 h-5 animate-spin text-primary-500" />
                   <span>Loading orders...</span>
                 </div>
               ) : orders.length === 0 ? (
@@ -878,50 +955,50 @@ export const FarmerDashboard = () => {
               ) : (
                 <table className="w-full text-sm text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-200 text-xs font-semibold uppercase text-slate-400">
-                      <th className="py-3 px-2">Order Number</th>
-                      <th className="py-3 px-2">Buyer</th>
-                      <th className="py-3 px-2">Crop Details</th>
-                      <th className="py-3 px-2">Total Price</th>
-                      <th className="py-3 px-2">Order Status</th>
-                      <th className="py-3 px-2 text-right">Actions</th>
+                    <tr className="bg-slate-50 text-xs font-bold uppercase text-slate-550 border-b border-slate-200">
+                      <th className="py-3 px-4 rounded-l-lg">Order Number</th>
+                      <th className="py-3 px-3">Buyer</th>
+                      <th className="py-3 px-3">Crop Details</th>
+                      <th className="py-3 px-3">Total Price</th>
+                      <th className="py-3 px-3">Order Status</th>
+                      <th className="py-3 px-4 text-right rounded-r-lg">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {orders.map(order => (
-                      <tr key={order._id} className="border-b border-slate-100 hover:bg-slate-50/50">
-                        <td className="py-4 px-2 font-mono font-bold text-slate-900">{order.orderNumber}</td>
-                        <td className="py-4 px-2">
-                          <p className="font-semibold">{order.buyer?.profile?.firstName} {order.buyer?.profile?.lastName}</p>
-                          <p className="text-[10px] text-slate-400">{order.buyer?.email}</p>
+                      <tr key={order._id} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                        <td className="py-4 px-4 font-mono font-bold text-slate-900">{order.orderNumber}</td>
+                        <td className="py-4 px-3">
+                          <p className="font-bold text-slate-800">{order.buyer?.profile?.firstName} {order.buyer?.profile?.lastName}</p>
+                          <p className="text-[10px] text-slate-400 font-mono mt-0.5">{order.buyer?.email}</p>
                         </td>
-                        <td className="py-4 px-2">
+                        <td className="py-4 px-3">
                           {order.items.map((item, idx) => (
-                            <div key={idx} className="text-xs">
-                              {item.product?.name} ({item.quantity} units)
+                            <div key={idx} className="text-xs text-slate-650">
+                              <span className="font-semibold text-slate-800">{item.product?.name}</span> ({item.quantity} units)
                             </div>
                           ))}
                         </td>
-                        <td className="py-4 px-2 font-bold">${order.totalAmount.toFixed(2)}</td>
-                        <td className="py-4 px-2">
-                          <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
+                        <td className="py-4 px-3 font-bold text-slate-900">${order.totalAmount.toFixed(2)}</td>
+                        <td className="py-4 px-3">
+                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase border ${
                             order.status === 'delivered'
-                              ? 'bg-green-50 text-green-700'
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                               : order.status === 'processing'
-                              ? 'bg-blue-50 text-blue-700'
+                              ? 'bg-blue-50 text-blue-700 border-blue-200'
                               : order.status === 'shipped'
-                              ? 'bg-purple-50 text-purple-700'
-                              : 'bg-slate-100 text-slate-600'
+                              ? 'bg-purple-50 text-purple-700 border-purple-200'
+                              : 'bg-slate-100 text-slate-600 border-slate-200'
                           }`}>
                             {order.status}
                           </span>
                         </td>
-                        <td className="py-4 px-2 text-right">
-                          <div className="flex justify-end gap-1.5">
+                        <td className="py-4 px-4 text-right">
+                          <div className="flex justify-end gap-2">
                             {order.status === 'pending' && (
                               <button
                                 onClick={() => handleUpdateOrderStatus(order._id, 'processing')}
-                                className="text-xs bg-blue-500 hover:bg-blue-600 text-white font-bold px-2 py-1 rounded"
+                                className="text-xs bg-blue-600 hover:bg-blue-700 text-white font-bold px-3 py-1.5 rounded-lg border border-transparent transition-colors shadow-xs"
                               >
                                 Accept
                               </button>
@@ -929,7 +1006,7 @@ export const FarmerDashboard = () => {
                             {order.status === 'processing' && (
                               <button
                                 onClick={() => handleUpdateOrderStatus(order._id, 'shipped')}
-                                className="text-xs bg-purple-500 hover:bg-purple-600 text-white font-bold px-2 py-1 rounded"
+                                className="text-xs bg-purple-600 hover:bg-purple-750 text-white font-bold px-3 py-1.5 rounded-lg border border-transparent transition-colors shadow-xs"
                               >
                                 Ship Order
                               </button>
@@ -937,7 +1014,7 @@ export const FarmerDashboard = () => {
                             {order.status === 'shipped' && (
                               <button
                                 onClick={() => handleUpdateOrderStatus(order._id, 'delivered')}
-                                className="text-xs bg-green-500 hover:bg-green-600 text-white font-bold px-2 py-1 rounded"
+                                className="text-xs bg-emerald-655 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-lg border border-transparent transition-colors shadow-xs"
                               >
                                 Deliver
                               </button>
@@ -945,7 +1022,7 @@ export const FarmerDashboard = () => {
                             {order.status !== 'delivered' && order.status !== 'cancelled' && (
                               <button
                                 onClick={() => handleUpdateOrderStatus(order._id, 'cancelled')}
-                                className="text-xs bg-red-100 hover:bg-red-200 text-red-700 font-bold px-2 py-1 rounded"
+                                className="text-xs bg-red-50 hover:bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-lg border border-red-200 transition-colors"
                               >
                                 Cancel
                               </button>
