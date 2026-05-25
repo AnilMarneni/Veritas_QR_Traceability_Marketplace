@@ -44,9 +44,18 @@ exports.createProduct = async (req, res, next) => {
 // @access  Public
 exports.getProducts = async (req, res, next) => {
   try {
-    const { query, category, minPrice, maxPrice, organicCertified, gmoFree, qualityGrade } = req.query;
+    const { query, category, minPrice, maxPrice, organicCertified, gmoFree, qualityGrade, farmer, status } = req.query;
 
-    const filter = { status: 'active' };
+    const filter = {};
+    if (farmer) {
+      filter.farmer = farmer;
+    }
+    if (status) {
+      filter.status = status;
+    } else if (!farmer) {
+      // General public only sees active products
+      filter.status = 'active';
+    }
 
     if (category) {
       filter.category = category;

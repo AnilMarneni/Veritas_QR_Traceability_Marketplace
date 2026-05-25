@@ -70,10 +70,8 @@ export const FarmerDashboard = () => {
   const fetchMyProducts = async () => {
     setProductsLoading(true);
     try {
-      const res = await axios.get(`${API_URL}/products`);
-      // Filter products belonging to this farmer
-      const filtered = res.data.data.filter(p => p.farmer && p.farmer._id === user.id);
-      setMyProducts(filtered);
+      const res = await axios.get(`${API_URL}/products?farmer=${user._id}`);
+      setMyProducts(res.data.data);
     } catch (err) {
       console.error(err);
     } finally {

@@ -143,7 +143,7 @@ export const Traceability = () => {
     );
   }
 
-  const { product, certifications, history } = data;
+  const { product, certifications, history, qrCodeUrl } = data;
   const farmerName = product.farmer?.profile?.companyName || `${product.farmer?.profile?.firstName} ${product.farmer?.profile?.lastName}`;
 
   return (
@@ -296,6 +296,24 @@ export const Traceability = () => {
               </div>
             )}
           </div>
+
+          {/* QR Code Origin Stamp Card */}
+          {qrCodeUrl && (
+            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col items-center text-center">
+              <h3 className="font-bold text-slate-900 text-sm mb-3 flex items-center gap-1.5 self-start">
+                <QrCode className="w-4 h-4 text-slate-500" />
+                <span>Verification QR Code</span>
+              </h3>
+              <img 
+                src={qrCodeUrl} 
+                alt="Product verify QR Code" 
+                className="w-40 h-40 shadow-xs border border-slate-200 rounded p-1 bg-white mb-3" 
+              />
+              <p className="text-[10px] text-slate-500 leading-relaxed">
+                Scan this QR code with any mobile camera to view this verified supply chain timeline on the go.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Traceability Timeline */}
@@ -344,6 +362,11 @@ export const Traceability = () => {
                           <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${stageDetails.bgColor} ${stageDetails.textColor} border border-current/10`}>
                             {stageDetails.label}
                           </span>
+                          {record.batchNumber && (
+                            <span className="text-[10px] text-slate-500 font-mono bg-slate-100 border border-slate-250 px-2 py-0.5 rounded">
+                              Batch: {record.batchNumber}
+                            </span>
+                          )}
                           {isLatest && (
                             <span className="bg-emerald-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider animate-pulse">
                               Current Stage

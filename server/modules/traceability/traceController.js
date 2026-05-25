@@ -75,12 +75,17 @@ exports.verifyProduct = async (req, res, next) => {
       locationDetails: req.query.location || 'Unknown Location'
     }).catch(err => console.error('❌ Failed to log scan history:', err));
 
+    // Generate public QR code linking back to this verify page
+    const hostUrl = req.headers.referer ? new URL(req.headers.referer).origin : 'http://localhost:3001';
+    const qrCodeUrl = await generateProductQRCode(product._id, hostUrl);
+
     res.status(200).json({
       success: true,
       data: {
         product,
         certifications,
-        history
+        history,
+        qrCodeUrl
       }
     });
   } catch (error) {
