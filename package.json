@@ -1,7 +1,7 @@
 {
   "name": "veritas-platform",
   "version": "1.0.0",
-  "description": "Veritas - Agricultural Marketplace & Traceability System",
+  "description": "Veritas — MERN Agricultural Marketplace with QR Traceability",
   "private": true,
   "scripts": {
     "install:all": "npm install && npm install --prefix server && npm install --prefix client",
